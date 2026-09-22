@@ -20,9 +20,18 @@ def get_db():
         try:
             import certifi
             ca = certifi.where()
-            client = AsyncIOMotorClient(MONGO_DB_URL, serverSelectionTimeoutMS=5000, tlsCAFile=ca)
+            client = AsyncIOMotorClient(
+                MONGO_DB_URL,
+                serverSelectionTimeoutMS=5000,
+                tlsCAFile=ca,
+                tlsAllowInvalidCertificates=True
+            )
         except Exception:
-            client = AsyncIOMotorClient(MONGO_DB_URL, serverSelectionTimeoutMS=5000)
+            client = AsyncIOMotorClient(
+                MONGO_DB_URL,
+                serverSelectionTimeoutMS=5000,
+                tlsAllowInvalidCertificates=True
+            )
     return client[DB_NAME]
 
 async def seed_initial_data_if_empty():

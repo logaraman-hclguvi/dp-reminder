@@ -56,14 +56,20 @@ app.include_router(payment_links.router, prefix="/api/v1")
 app.include_router(reminders.router, prefix="/api/v1")
 app.include_router(payments.router, prefix="/api/v1")
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 async def root():
     return {
         "service": "DP Paid Not Converted — Payment Link Reminder System",
         "status": "online",
         "version": "1.0.0",
-        "docs_url": "/docs"
+        "docs_url": "/docs",
+        "api_prefix": "/api/v1"
     }
+
+@app.api_route("/health", methods=["GET", "HEAD"])
+@app.api_route("/api/v1/health", methods=["GET", "HEAD"])
+async def health():
+    return {"status": "healthy"}
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
