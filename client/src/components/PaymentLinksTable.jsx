@@ -9,7 +9,8 @@ export default function PaymentLinksTable({
   onCancelLink,
   onChangeStatus,
   onSendEmailReminder,
-  onOpenGenerateModal
+  onOpenGenerateModal,
+  onOpenLinkDetails
 }) {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -193,6 +194,15 @@ export default function PaymentLinksTable({
                     </td>
                     <td>
                       <div className="table-action-group" style={{ justifyContent: 'flex-end' }}>
+                        {onOpenLinkDetails && (
+                          <button
+                            className="btn btn-secondary btn-sm"
+                            title="View Full Link Details & Notes"
+                            onClick={() => onOpenLinkDetails(link)}
+                          >
+                            <span>View</span>
+                          </button>
+                        )}
                         <button
                           className="btn btn-secondary btn-sm"
                           title="Copy Payment URL to clipboard"
@@ -207,7 +217,7 @@ export default function PaymentLinksTable({
                           <button
                             className="btn btn-secondary btn-sm"
                             title="Send Reminder Email via Gmail SMTP"
-                            onClick={() => onSendEmailReminder(link.id, link.lead_email || '', link.status)}
+                            onClick={() => onSendEmailReminder(link)}
                           >
                             <Mail size={11} color={link.status === 'OVERDUE' ? 'var(--danger)' : 'var(--guvi-green)'} />
                             <span>Email</span>

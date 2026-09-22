@@ -184,13 +184,35 @@ export default function App() {
     }
   };
 
-  // Open email modal for given link
-  const handleOpenEmailModal = (link) => {
-    const leadObj = leads.find((l) => l.id === (link.lead_id || link.id));
+  // Open email modal for given link or reminder
+  const handleOpenEmailModal = (item) => {
+    if (!item) return;
+    const targetId = typeof item === 'string' ? item : item.payment_link_id || item.id;
+    const matchedLink = paymentLinks.find((l) => l.id === targetId) || {};
+    const itemObj = typeof item === 'object' ? item : {};
+    const resolvedLink = { ...matchedLink, ...itemObj, id: targetId };
+    
+    const leadId = resolvedLink.lead_id;
+    const leadObj = leads.find((l) => l.id === leadId) || {};
+
+    const candidateName = resolvedLink.lead_name || leadObj.name || 'Candidate';
+    const recipientEmail = itemObj.lead_email || resolvedLink.lead_email || leadObj.email || '';
+    const amount = resolvedLink.amount || itemObj.amount || 0;
+    const courseTitle = resolvedLink.course_title || itemObj.course_title || '';
+
+    const enriched = {
+      ...resolvedLink,
+      lead_name: candidateName,
+      lead_email: recipientEmail,
+      amount: amount,
+      course_title: courseTitle,
+      status: itemObj.status || resolvedLink.status || 'PENDING'
+    };
+
     setEmailModalData({
       isOpen: true,
-      link: link,
-      defaultEmail: leadObj?.email || link.lead_email || ''
+      link: enriched,
+      defaultEmail: recipientEmail
     });
   };
 
@@ -375,7 +397,7 @@ export default function App() {
               onOpenFollowUp={(rem) => setActiveFollowUpReminder(rem)}
               onSimulatePayment={handleSimulatePayment}
               onCancelLink={handleCancelLink}
-              onSendEmailReminder={(linkId, email, type) => handleOpenEmailModal({ id: linkId, status: 'OVERDUE' })}
+              onSendEmailReminder={(item) => handleOpenEmailModal(item)}
               formatOverdueTime={formatOverdueTime}
             />
           )}
@@ -388,7 +410,8 @@ export default function App() {
               onSimulatePayment={handleSimulatePayment}
               onCancelLink={handleCancelLink}
               onChangeStatus={handleDynamicPaymentStatusChange}
-              onSendEmailReminder={(linkId, email, type) => handleOpenEmailModal({ id: linkId, status: type })}
+              onSendEmailReminder={(item) => handleOpenEmailModal(item)}
+              onOpenLinkDetails={handleOpenLinkDetails}
               onOpenGenerateModal={() => {
                 if (courses.length > 0 && leads.length > 0) {
                   setNewLinkForm({

@@ -30,6 +30,7 @@ class ReminderResponse(BaseModel):
     # Enriched fields for UI
     lead_name: Optional[str] = None
     lead_phone: Optional[str] = None
+    lead_email: Optional[str] = None
     course_title: Optional[str] = None
     amount: Optional[float] = None
     created_at: Optional[datetime] = None

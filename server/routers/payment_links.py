@@ -78,6 +78,7 @@ async def create_payment_link(data: PaymentLinkCreate):
         due_at=doc["due_at"],
         lead_name=lead.get("name"),
         lead_phone=lead.get("phone"),
+        lead_email=lead.get("email", ""),
         course_title=course.get("title"),
         bd_name=bd.get("name")
     )
@@ -123,6 +124,7 @@ async def list_payment_links(
             gateway_transaction_id=doc.get("gateway_transaction_id"),
             lead_name=lead.get("name"),
             lead_phone=lead.get("phone"),
+            lead_email=lead.get("email", ""),
             course_title=course.get("title"),
             bd_name=bd.get("name")
         ))

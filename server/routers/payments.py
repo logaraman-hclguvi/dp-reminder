@@ -36,6 +36,12 @@ async def simulate_payment_webhook(payload: WebhookPayload):
             "payment_link_id": payload.payment_link_id
         }
 
+    if link.get("status") == "CANCELLED":
+        raise HTTPException(
+            status_code=400,
+            detail="This payment link is CANCELLED and expired. Please use the newly issued active payment link."
+        )
+
     if payload.status == "SUCCESS":
         # 1. Update payment link to PAID
         await db.payment_links.update_one(

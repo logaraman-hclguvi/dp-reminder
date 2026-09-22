@@ -29,5 +29,6 @@ class PaymentLinkResponse(BaseModel):
     # Enriched fields for easy UI consumption
     lead_name: Optional[str] = None
     lead_phone: Optional[str] = None
+    lead_email: Optional[str] = None
     course_title: Optional[str] = None
     bd_name: Optional[str] = None

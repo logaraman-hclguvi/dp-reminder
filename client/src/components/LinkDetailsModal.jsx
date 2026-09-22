@@ -163,7 +163,7 @@ export default function LinkDetailsModal({
             <label className="form-label" style={{ marginBottom: '6px' }}>
               Follow-up &amp; Engagement Actions
             </label>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
               <button
                 type="button"
                 className="btn btn-secondary btn-sm"
@@ -174,7 +174,7 @@ export default function LinkDetailsModal({
                 }}
               >
                 <Mail size={13} />
-                <span>Send Email Reminder</span>
+                <span>Email Reminder</span>
               </button>
 
               <button
@@ -185,6 +185,19 @@ export default function LinkDetailsModal({
               >
                 <MessageSquare size={13} color="var(--guvi-green)" />
                 <span>WhatsApp Template</span>
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                style={{ justifyContent: 'center' }}
+                onClick={() => {
+                  onClose();
+                  if (onOpenFollowUp) onOpenFollowUp(link);
+                }}
+              >
+                <Clock size={13} color="#64748b" />
+                <span>Touchpoints &amp; Notes</span>
               </button>
             </div>
           </div>
@@ -218,7 +231,7 @@ export default function LinkDetailsModal({
                   }}
                 >
                   <Zap size={13} />
-                  <span>Mark as Converted</span>
+                  <span>Mark Paid</span>
                 </button>
               )}
               <button type="button" className="btn btn-secondary btn-sm" onClick={onClose}>

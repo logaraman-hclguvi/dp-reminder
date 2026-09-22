@@ -94,7 +94,7 @@ export default function OverdueQueue({
                         <button
                           className="btn btn-secondary btn-sm"
                           title="Send Urgent Reminder Email via Gmail SMTP"
-                          onClick={() => onSendEmailReminder(rem.payment_link_id, rem.lead_email || '', 'OVERDUE')}
+                          onClick={() => onSendEmailReminder(rem)}
                         >
                           <Mail size={11} color="var(--danger)" />
                           <span>Email</span>

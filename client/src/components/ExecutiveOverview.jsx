@@ -448,11 +448,12 @@ export default function ExecutiveOverview({
                   const isPaid = link.status === 'PAID';
                   const isOverdue = link.status === 'OVERDUE';
                   const isPending = link.status === 'PENDING';
+                  const isCancelled = link.status === 'CANCELLED';
 
                   return (
                     <tr
                       key={link.id}
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: 'pointer', opacity: isCancelled ? 0.75 : 1 }}
                       onClick={() => onOpenLinkDetails(link)}
                     >
                       <td onClick={(e) => e.stopPropagation()}>
@@ -493,6 +494,11 @@ export default function ExecutiveOverview({
                             <AlertTriangle size={13} color="#e11d48" />
                             Overdue (&gt;24h)
                           </span>
+                        ) : isCancelled ? (
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#64748b', fontSize: '12px', fontWeight: 600 }}>
+                            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#94a3b8' }}></span>
+                            Cancelled / Replaced
+                          </span>
                         ) : (
                           <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#475569', fontSize: '12px', fontWeight: 600 }}>
                             <Clock size={13} color="#64748b" />
@@ -501,7 +507,7 @@ export default function ExecutiveOverview({
                         )}
                       </td>
                       <td>
-                        <span style={{ fontWeight: 700, color: '#0f172a', fontSize: '13px' }}>
+                        <span style={{ fontWeight: 700, color: isCancelled ? '#64748b' : '#0f172a', fontSize: '13px', textDecoration: isCancelled ? 'line-through' : 'none' }}>
                           ₹{link.amount?.toLocaleString()}
                         </span>
                       </td>
@@ -515,6 +521,11 @@ export default function ExecutiveOverview({
                           <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#e11d48', fontWeight: 600 }}>
                             <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#e11d48' }}></span>
                             Overdue
+                          </span>
+                        ) : isCancelled ? (
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#64748b', fontWeight: 600 }}>
+                            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#94a3b8' }}></span>
+                            Cancelled
                           </span>
                         ) : (
                           <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#d97706', fontWeight: 600 }}>

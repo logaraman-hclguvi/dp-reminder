@@ -67,6 +67,7 @@ async def list_overdue_reminders(bd_id: Optional[str] = Query(None, description=
             resolved_at=doc.get("resolved_at"),
             lead_name=lead.get("name", "Unknown Lead"),
             lead_phone=lead.get("phone", "-"),
+            lead_email=lead.get("email", ""),
             course_title=course.get("title", "Course"),
             amount=link.get("amount", 0.0),
             created_at=link.get("created_at"),
