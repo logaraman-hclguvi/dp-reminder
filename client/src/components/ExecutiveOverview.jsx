@@ -27,7 +27,9 @@ export default function ExecutiveOverview({
   onOpenGenerateModal,
   onOpenEmailModal,
   onOpenLinkDetails,
-  onExportCsv
+  onExportCsv,
+  onSelectBd,
+  onNavigateTab
 }) {
   const [filterTab, setFilterTab] = useState('ALL'); // 'ALL' | 'PAID' | 'PENDING' | 'OVERDUE'
   const [searchTerm, setSearchTerm] = useState('');
@@ -108,25 +110,30 @@ export default function ExecutiveOverview({
   };
 
   const handleExport = () => {
+    if (filteredLinks.length === 0) {
+      if (onExportCsv) onExportCsv([], 'No records to export');
+      return;
+    }
+    // Build and download CSV file
+    const headers = 'Link ID,Lead Name,Phone,Course,Amount,Status,Created At,Due At\n';
+    const rows = filteredLinks
+      .map(
+        (l) =>
+          `"${l.id}","${(l.lead_name || '').replace(/"/g, '""')}","${(l.lead_phone || '').replace(/"/g, '""')}","${(l.course_title || '').replace(/"/g, '""')}","${l.amount}","${l.status}","${l.created_at}","${l.due_at}"`
+      )
+      .join('\n');
+    const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `payment_links_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
     if (onExportCsv) {
-      onExportCsv(filteredLinks);
-    } else {
-      // Fallback CSV generator
-      const headers = 'Link ID,Lead Name,Phone,Course,Amount,Status,Created At,Due At\n';
-      const rows = filteredLinks
-        .map(
-          (l) =>
-            `"${l.id}","${l.lead_name || ''}","${l.lead_phone || ''}","${l.course_title || ''}","${l.amount}","${l.status}","${l.created_at}","${l.due_at}"`
-        )
-        .join('\n');
-      const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.setAttribute('href', url);
-      link.setAttribute('download', `payment_links_${new Date().toISOString().slice(0, 10)}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      onExportCsv(filteredLinks, `Successfully downloaded CSV with ${filteredLinks.length} record(s).`);
     }
   };
 
@@ -282,7 +289,12 @@ export default function ExecutiveOverview({
                 </p>
               </div>
             </div>
-            <button className="btn btn-secondary btn-sm" style={{ padding: '3px 10px', fontSize: '11px' }}>
+            <button
+              className="btn btn-secondary btn-sm"
+              style={{ padding: '3px 10px', fontSize: '11px', cursor: 'pointer' }}
+              onClick={() => onNavigateTab && onNavigateTab('links')}
+              title="View all payment links"
+            >
               View All
             </button>
           </div>
@@ -301,7 +313,15 @@ export default function ExecutiveOverview({
               </thead>
               <tbody>
                 {bdaRanking.map((bda, index) => (
-                  <tr key={bda.id}>
+                  <tr
+                    key={bda.id}
+                    style={{ cursor: 'pointer', transition: 'background 0.15s ease' }}
+                    onClick={() => {
+                      if (onSelectBd) onSelectBd(bda.id);
+                      if (onNavigateTab) onNavigateTab('links');
+                    }}
+                    title={`Click to filter and view ${bda.name}'s payment links`}
+                  >
                     <td style={{ color: '#94a3b8', fontSize: '12px' }}>{index + 1}</td>
                     <td>
                       <span style={{ fontWeight: 700, color: '#0f172a', fontSize: '12.5px' }}>
@@ -317,7 +337,7 @@ export default function ExecutiveOverview({
                     <td style={{ textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
                       ₹{bda.uncollectedAmount.toLocaleString()}
                     </td>
-                    <td style={{ textAlign: 'right', color: '#94a3b8' }}>
+                    <td style={{ textAlign: 'right', color: '#64748b' }}>
                       <ChevronRight size={14} />
                     </td>
                   </tr>

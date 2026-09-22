@@ -86,11 +86,17 @@ body {
 }
 
 .sidebar-header {
-  padding: 0 18px;
+  padding: 0 14px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   height: 64px;
   flex-shrink: 0;
+}
+
+.app-sidebar.collapsed .sidebar-header {
+  padding: 0;
+  justify-content: center;
 }
 
 .sidebar-brand-wrapper {
@@ -99,16 +105,43 @@ body {
   gap: 10px;
 }
 
+.app-sidebar.collapsed .sidebar-brand-wrapper {
+  justify-content: center;
+}
+
+.sidebar-toggle-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.15s ease;
+}
+
+.sidebar-toggle-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.app-sidebar.collapsed .sidebar-toggle-btn {
+  display: none;
+}
+
 .sidebar-brand-icon-box {
   width: 36px;
   height: 36px;
   border-radius: 8px;
-  background-color: var(--guvi-green);
+  background: linear-gradient(135deg, #00A86B, #059669);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 2px 4px rgba(0, 168, 107, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 168, 107, 0.35);
 }
 
 .sidebar-brand-text-col {
@@ -125,11 +158,11 @@ body {
 }
 
 .sidebar-brand-subtitle {
-  font-size: 9.5px;
-  font-weight: 700;
+  font-size: 9px;
+  font-weight: 800;
   color: var(--guvi-green);
-  letter-spacing: 0.4px;
-  margin-top: 1px;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
 }
 
 .sidebar-nav {
@@ -139,6 +172,11 @@ body {
   gap: 3px;
   flex: 1;
   overflow-y: auto;
+}
+
+.app-sidebar.collapsed .sidebar-nav {
+  padding: 12px 8px;
+  align-items: center;
 }
 
 .sidebar-group-title {
@@ -165,6 +203,14 @@ body {
   font-weight: 500;
   font-size: 13px;
   transition: all 0.15s ease;
+  position: relative;
+}
+
+.app-sidebar.collapsed .sidebar-nav-btn {
+  width: 44px;
+  height: 40px;
+  padding: 0;
+  justify-content: center;
 }
 
 .sidebar-nav-btn:hover {
@@ -186,6 +232,25 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.app-sidebar.collapsed .sidebar-nav-btn-left {
+  justify-content: center;
+  gap: 0;
+}
+
+.sidebar-collapsed-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.sidebar-collapsed-dot.danger {
+  background-color: #e11d48;
+  box-shadow: 0 0 0 2px #fff;
 }
 
 .sidebar-nav-pill-count {
@@ -212,6 +277,12 @@ body {
   flex-shrink: 0;
 }
 
+.app-sidebar.collapsed .sidebar-footer {
+  padding: 12px 8px;
+  display: flex;
+  justify-content: center;
+}
+
 .sidebar-user-card {
   padding: 6px 8px;
   border-radius: 8px;
@@ -220,6 +291,11 @@ body {
   gap: 10px;
   cursor: pointer;
   transition: background 0.15s ease;
+}
+
+.app-sidebar.collapsed .sidebar-user-card {
+  padding: 0;
+  justify-content: center;
 }
 
 .sidebar-user-card:hover {

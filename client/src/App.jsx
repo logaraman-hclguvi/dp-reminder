@@ -116,7 +116,7 @@ export default function App() {
     try {
       const [remindersData, linksData, leadsData] = await Promise.all([
         fetchOverdueReminders(selectedBdId),
-        fetchPaymentLinks(selectedBdId, statusFilter),
+        fetchPaymentLinks(selectedBdId),
         fetchLeads(selectedBdId)
       ]);
       setOverdueReminders(remindersData);
@@ -125,7 +125,7 @@ export default function App() {
     } catch (err) {
       console.error('Error fetching dashboard data:', err);
     }
-  }, [selectedBdId, statusFilter]);
+  }, [selectedBdId]);
 
   useEffect(() => {
     loadDashboardData();
@@ -301,6 +301,7 @@ export default function App() {
         currentBd={currentBd}
         overdueCount={overdueCount}
         pendingCount={pendingCount}
+        linksCount={paymentLinks.length}
         leadsCount={leads.length}
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
@@ -361,7 +362,9 @@ export default function App() {
               }}
               onOpenEmailModal={handleOpenEmailModal}
               onOpenLinkDetails={handleOpenLinkDetails}
-              onExportCsv={() => addToast('CSV Export generated and downloaded', 'success', 'Export Complete')}
+              onExportCsv={(records, msg) => addToast(msg || 'CSV Export generated and downloaded', 'success', 'Export Complete')}
+              onSelectBd={setSelectedBdId}
+              onNavigateTab={setActiveTab}
             />
           )}
 
