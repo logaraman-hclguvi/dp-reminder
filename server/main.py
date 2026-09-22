@@ -48,13 +48,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount all modular routers under /api/v1
+# Mount all modular routers under /api/v1 and directly at root for convenience
 app.include_router(users.router, prefix="/api/v1")
 app.include_router(courses.router, prefix="/api/v1")
 app.include_router(leads.router, prefix="/api/v1")
 app.include_router(payment_links.router, prefix="/api/v1")
 app.include_router(reminders.router, prefix="/api/v1")
 app.include_router(payments.router, prefix="/api/v1")
+
+# Also mount at root as fallback aliases
+app.include_router(users.router, include_in_schema=False)
+app.include_router(courses.router, include_in_schema=False)
+app.include_router(leads.router, include_in_schema=False)
+app.include_router(payment_links.router, include_in_schema=False)
+app.include_router(reminders.router, include_in_schema=False)
+app.include_router(payments.router, include_in_schema=False)
 
 @app.api_route("/", methods=["GET", "HEAD"])
 async def root():
