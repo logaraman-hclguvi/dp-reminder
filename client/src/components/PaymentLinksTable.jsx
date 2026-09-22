@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { CreditCard, Plus, Zap, CheckCircle, ChevronDown, Mail, Search, Download, FileText, Clock, AlertTriangle } from 'lucide-react';
+import { CreditCard, Plus, Zap, CheckCircle, CheckCircle2, ChevronDown, Mail, Search, Download, FileText, Clock, AlertTriangle, Copy, Eye, Ban } from 'lucide-react';
 
 export default function PaymentLinksTable({
   links = [],
@@ -194,57 +194,80 @@ export default function PaymentLinksTable({
                     </td>
                     <td>
                       <div className="table-action-group" style={{ justifyContent: 'flex-end' }}>
-                        {onOpenLinkDetails && (
+                        {/* 1. Primary Action */}
+                        {link.status === 'PENDING' || link.status === 'OVERDUE' ? (
                           <button
-                            className="btn btn-secondary btn-sm"
-                            title="View Full Link Details & Notes"
-                            onClick={() => onOpenLinkDetails(link)}
+                            className="table-btn-mark-paid"
+                            title="Simulate instant gateway payment & convert lead"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSimulatePayment(link.id);
+                            }}
                           >
-                            <span>View</span>
+                            <Zap size={12} />
+                            <span>Mark Paid</span>
                           </button>
+                        ) : link.status === 'PAID' ? (
+                          <span className="table-status-pill success">
+                            <CheckCircle2 size={12} />
+                            <span>Converted</span>
+                          </span>
+                        ) : (
+                          <span className="table-status-pill neutral">
+                            <span>Cancelled</span>
+                          </span>
                         )}
+
+                        {/* 2. Sleek Micro Utility Icon Buttons */}
                         <button
-                          className="btn btn-secondary btn-sm"
-                          title="Copy Payment URL to clipboard"
-                          onClick={() => {
+                          className="table-icon-btn"
+                          title="Copy Payment Checkout URL"
+                          onClick={(e) => {
+                            e.stopPropagation();
                             const url = link.payment_url || `https://pay.edtech.com/${link.id}`;
                             navigator.clipboard.writeText(url);
                           }}
                         >
-                          <span>🔗 Copy URL</span>
+                          <Copy size={13} />
                         </button>
+
                         {(link.status === 'PENDING' || link.status === 'OVERDUE') && (
                           <button
-                            className="btn btn-secondary btn-sm"
+                            className="table-icon-btn"
                             title="Send Reminder Email via Gmail SMTP"
-                            onClick={() => onSendEmailReminder(link)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSendEmailReminder(link);
+                            }}
                           >
-                            <Mail size={11} color={link.status === 'OVERDUE' ? 'var(--danger)' : 'var(--guvi-green)'} />
-                            <span>Email</span>
+                            <Mail size={13} color={link.status === 'OVERDUE' ? 'var(--danger)' : 'var(--guvi-green)'} />
                           </button>
                         )}
-                        {link.status === 'PENDING' || link.status === 'OVERDUE' ? (
-                          <>
-                            <button
-                              className="btn btn-primary-soft btn-sm"
-                              onClick={() => onSimulatePayment(link.id)}
-                            >
-                              <Zap size={11} />
-                              <span>Mark Paid</span>
-                            </button>
-                            <button
-                              className="btn btn-secondary btn-sm"
-                              style={{ color: '#e11d48', borderColor: '#fecdd3' }}
-                              onClick={() => onCancelLink(link.id)}
-                            >
-                              Cancel
-                            </button>
-                          </>
-                        ) : (
-                          <span style={{ color: 'var(--guvi-green)', fontSize: '12px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <CheckCircle size={12} />
-                            {link.status === 'PAID' ? 'Converted' : 'Closed'}
-                          </span>
+
+                        {onOpenLinkDetails && (
+                          <button
+                            className="table-icon-btn"
+                            title="View Link Details & Touchpoints"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onOpenLinkDetails(link);
+                            }}
+                          >
+                            <Eye size={13} />
+                          </button>
+                        )}
+
+                        {(link.status === 'PENDING' || link.status === 'OVERDUE') && (
+                          <button
+                            className="table-icon-btn danger"
+                            title="Cancel this Payment Link"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onCancelLink(link.id);
+                            }}
+                          >
+                            <Ban size={13} />
+                          </button>
                         )}
                       </div>
                     </td>

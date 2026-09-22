@@ -21,16 +21,15 @@ export default function TopHeader({
 
   return (
     <header className="top-header">
-      {/* Left: Search Bar & SLA Status Badge */}
+      {/* Left: Prominent Clean Search Bar & SLA Status Badge */}
       <div className="header-left">
-        <div className="smooth-search-container">
-          <Search size={14} color="#94a3b8" />
+        <div className="prominent-header-search">
+          <Search size={15} color="var(--guvi-green)" />
           <input
             type="text"
-            className="smooth-search-input"
-            placeholder="Search leads, phone, or payment links..."
+            className="prominent-search-input"
+            placeholder="Search candidate leads, phone, or payment links..."
           />
-          <kbd className="search-shortcut-kbd">⌘ K</kbd>
         </div>
 
         <div className="sla-live-badge-clean">

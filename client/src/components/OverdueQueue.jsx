@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, Clock, Edit3, Zap, Phone, CheckCircle, Mail } from 'lucide-react';
+import { AlertTriangle, Clock, Edit3, Zap, Phone, CheckCircle, Mail, Copy, Ban } from 'lucide-react';
 
 export default function OverdueQueue({
   reminders,
@@ -51,15 +51,19 @@ export default function OverdueQueue({
                   <th>Token Amount</th>
                   <th>SLA Aging</th>
                   <th>Follow-up History</th>
-                  <th style={{ textAlign: 'right' }}>Quick Actions</th>
+                  <th style={{ textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {reminders.map((rem) => (
-                  <tr key={rem.id}>
+                  <tr
+                    key={rem.id}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => onOpenFollowUp(rem)}
+                  >
                     <td>
                       <div className="user-identity-cell">
-                        <div className="user-avatar-pill">
+                        <div className="user-avatar-pill" style={{ background: '#fee2e2', color: '#e11d48' }}>
                           {rem.lead_name?.slice(0, 2).toUpperCase() || 'LD'}
                         </div>
                         <div>
@@ -91,34 +95,63 @@ export default function OverdueQueue({
                     </td>
                     <td>
                       <div className="table-action-group" style={{ justifyContent: 'flex-end' }}>
+                        {/* 1. Primary Action */}
                         <button
-                          className="btn btn-secondary btn-sm"
-                          title="Send Urgent Reminder Email via Gmail SMTP"
-                          onClick={() => onSendEmailReminder(rem)}
+                          className="table-btn-mark-paid"
+                          title="Simulate instant gateway payment & resolve overdue alert"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onSimulatePayment(rem.payment_link_id);
+                          }}
                         >
-                          <Mail size={11} color="var(--danger)" />
-                          <span>Email</span>
-                        </button>
-                        <button
-                          className="btn btn-secondary btn-sm"
-                          onClick={() => onOpenFollowUp(rem)}
-                        >
-                          <Edit3 size={11} />
-                          <span>Log Note</span>
-                        </button>
-                        <button
-                          className="btn btn-primary-soft btn-sm"
-                          onClick={() => onSimulatePayment(rem.payment_link_id)}
-                        >
-                          <Zap size={11} />
+                          <Zap size={12} />
                           <span>Mark Paid</span>
                         </button>
+
+                        {/* 2. Micro Utility Tools */}
                         <button
-                          className="btn btn-secondary btn-sm"
-                          style={{ color: '#e11d48', borderColor: '#fecdd3' }}
-                          onClick={() => onCancelLink(rem.payment_link_id)}
+                          className="table-icon-btn"
+                          title="Log Call Note / View Touchpoints Timeline"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onOpenFollowUp(rem);
+                          }}
                         >
-                          Cancel
+                          <Edit3 size={13} />
+                        </button>
+
+                        <button
+                          className="table-icon-btn"
+                          title="Send Urgent Reminder Email via Gmail SMTP"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onSendEmailReminder(rem);
+                          }}
+                        >
+                          <Mail size={13} color="var(--danger)" />
+                        </button>
+
+                        <button
+                          className="table-icon-btn"
+                          title="Copy Payment Checkout Link"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const url = rem.payment_url || `https://pay.edtech.com/${rem.payment_link_id}`;
+                            navigator.clipboard.writeText(url);
+                          }}
+                        >
+                          <Copy size={13} />
+                        </button>
+
+                        <button
+                          className="table-icon-btn danger"
+                          title="Cancel this Payment Link"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onCancelLink(rem.payment_link_id);
+                          }}
+                        >
+                          <Ban size={13} />
                         </button>
                       </div>
                     </td>
